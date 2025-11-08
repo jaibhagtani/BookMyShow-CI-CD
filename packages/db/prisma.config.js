@@ -1,14 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = require("prisma/config");
-require("dotenv/config");
-exports.default = (0, config_1.defineConfig)({
+// "use strict";
+require("dotenv").config();
+// dotenv.config();
+module.exports = {
     schema: "prisma/schema.prisma",
     migrations: {
         path: "prisma/migrations",
     },
     engine: "classic",
     datasource: {
-        url: (0, config_1.env)("DATABASE_URL"),
+        url: process.env.DATABASE_URL,
     },
-});
+};
