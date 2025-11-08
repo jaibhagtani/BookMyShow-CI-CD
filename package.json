@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "BookMyShow_CICD",
   "private": true,
   "scripts": {
     "build": "turbo run build",
