@@ -11,15 +11,13 @@ app.get("/", (req, res) => res.send("hello ji"));
 
 app.post("/signup", async (req, res) => {
   try {
-
-    console.log(req.body);
     const username = req.body.username;
     const password = req.body.password;
 
     const user = await client.user.create({
       data: {
-        username,
-        password
+        username: username,
+        password: password
       }
     });
 

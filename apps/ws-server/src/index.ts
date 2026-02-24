@@ -5,7 +5,8 @@ const server = new WebSocketServer({
 });
 
 server.on("connection", async (socket) => {
-
+    
+    // dumping something to the db, just to check if the connection is working fine or not
     try {
         await client.user.create({
             data: {
