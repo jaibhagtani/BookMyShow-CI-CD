@@ -12,8 +12,8 @@
     "build": "tsc -p ."
   },
   "exports": {
-    "./client": "./dist/index.js",
-    ".": "./dist/index.js"
+    "./client": "./src/index.js",
+    ".": "./src/index.js"
   },
   "license": "ISC",
   "description": "",
