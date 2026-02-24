@@ -4,6 +4,7 @@ on:
     branches:
       - "main"
 
+#added ""secrets wali thing 
 jobs:
   redeploy_everything:
     name: Deploying Everything to the staging cluster
@@ -11,7 +12,7 @@ jobs:
     steps:
       - name: SSH into server
         run: | 
-          echo ${{secrets.STAGING_SSH_KEY}} &> ~/ssh_key
+          echo "${{secrets.STAGING_SSH_KEY}}" &> ~/ssh_key
           ssh -i ~/ssh_key root@34.239.168.53
           cd BookMyShow-CI-CD
           git pull origin main
