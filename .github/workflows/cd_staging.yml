@@ -20,8 +20,7 @@ jobs:
           port: ${{ secrets.STAGING_SSH_PORT }}
           script: |
             cd BookMyShow-CI-CD
-            git fetch origin
-            git reset --hard origin/main
+            git pull origin main
             pnpm install
             pnpm run build
             /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 delete http-server
