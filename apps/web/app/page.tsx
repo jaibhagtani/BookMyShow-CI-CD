@@ -13,7 +13,7 @@ export default async function Home() {
       {
         user.map((u: any) => (
           <div>
-            {u?.username} - {u?.password}
+            Username : {u?.username} - Password : {u?.password}
           </div>
         ))
       }
