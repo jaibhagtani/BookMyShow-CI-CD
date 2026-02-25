@@ -32,7 +32,8 @@ jobs:
             echo "Using Node version:"
             node -v
 
-            git pull origin production
+            git fetch origin
+            git reset --hard origin/production
             pnpm install
             pnpm run build
             PM2=/home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2
