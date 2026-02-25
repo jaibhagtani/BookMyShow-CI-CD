@@ -23,12 +23,12 @@ jobs:
             git pull origin main
             pnpm install
             pnpm run build
-            /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 delete http-server
-            cd apps/http-server && /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 start apps/http-server --name http-server && cd ../..
-            /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 delete ws-server
-            cd apps/ws-server && /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 start apps/ws-server --name ws-server && cd ../..
-            /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 delete web-server
-            cd apps/web && /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 start apps/web --name web-server && cd ../../..
-            /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 save
+            pm2 delete http-server
+            cd apps/http-server && pm2 start apps/http-server --name http-server && cd ../..
+            pm2 delete ws-server
+            cd apps/ws-server && pm2 start apps/ws-server --name ws-server && cd ../..
+            pm2 delete web-server
+            cd apps/web && pm2 start apps/web --name web-server && cd ../../..
+            pm2 save
 
 
