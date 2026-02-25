@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => res.send("hello ji, mein hu owner, kuch change kiya hai "));
+app.get("/", (req, res) => res.send("hello ji, mein hu owner, kuch change kiya hai, mein nhi bataaunga "));
 
 app.post("/signup", async (req, res) => {
   try {
