@@ -4,7 +4,12 @@ on:
     branches:
       - "main"
 
-# added ""secrets wali thing 
+# added ""secrets wali thing
+
+# ********** This is very very important thing ********** 
+# export NVM_DIR="$HOME/.nvm"
+#             source $NVM_DIR/nvm.sh
+#             nvm use 20
 # https://github.com/appleboy/ssh-action used to ssh into ec2.
 jobs:
   redeploy_everything:
