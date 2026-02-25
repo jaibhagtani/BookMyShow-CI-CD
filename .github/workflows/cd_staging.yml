@@ -4,20 +4,23 @@ on:
     branches:
       - "main"
 
-#added ""secrets wali thing 
+# added ""secrets wali thing 
+# https://github.com/appleboy/ssh-action used to ssh into ec2.
 jobs:
   redeploy_everything:
     name: Deploying Everything to the staging cluster
     runs-on: ubuntu-latest
     steps:
       - name: SSH into server
-        run: | 
-          echo "${{secrets.STAGING_SSH_KEY}}" &> ~/ssh_key
-          ssh -i ~/ssh_key root@34.239.168.53
-          cd BookMyShow-CI-CD
-          git pull origin main
-          pnpm install
-          pnpm run build
-          pm2 restart fe-server
-          pm2 restart http-server
-          pm2 restart ws-server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.STAGING_IP }}
+          username: ubuntu
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_SSH_PORT }}
+          script: |
+            cd CI-CD-Prac
+            git pull origin main
+            npm install
+            npm run build
+            npm run start
