@@ -28,10 +28,6 @@ jobs:
             node -v
 
             git pull origin main
-
-            corepack enable
-            corepack prepare pnpm@latest --activate
-            
             pnpm install
             pnpm run build
             PM2=/home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2
