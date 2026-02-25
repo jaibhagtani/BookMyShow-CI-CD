@@ -20,7 +20,8 @@ jobs:
           port: ${{ secrets.STAGING_SSH_PORT }}
           script: |
             cd BookMyShow-CI-CD
-            git pull origin main
+            git fetch origin
+            git reset --hard origin/main
             pnpm install
             pnpm run build
             /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 restart http-server || /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 start apps/http-server --name http-server
