@@ -23,4 +23,7 @@ jobs:
             git pull origin main
             pnpm install
             pnpm run build
-            pm2 restart all
+            pm2 restart http-server
+            pm2 restart ws-server
+            pm2 restart web-server
+
