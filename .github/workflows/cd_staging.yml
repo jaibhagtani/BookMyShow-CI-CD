@@ -23,7 +23,9 @@ jobs:
             git pull origin main
             pnpm install
             pnpm run build
-            cd apps/http-server && pm2 restart http-server && cd ../..
-            cd apps/ws-server && pm2 restart ws-server && cd ../..
-            cd apps/web && pm2 restart web-server && cd ../..
+            /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 restart http-server || /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 start apps/http-server --name http-server
+            /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 restart ws-server || /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 start apps/ws-server --name ws-server
+            /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 restart web-server || /home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2 start apps/web --name web-server
+
+
 
