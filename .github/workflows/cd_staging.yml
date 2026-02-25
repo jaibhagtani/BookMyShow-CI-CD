@@ -21,6 +21,7 @@ jobs:
           script: |
             cd BookMyShow-CI-CD
             git pull origin main
+            node -v
             pnpm install
             pnpm run build
             PM2=/home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2
