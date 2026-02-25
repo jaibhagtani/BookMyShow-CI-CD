@@ -19,8 +19,8 @@ jobs:
           key: ${{ secrets.STAGING_SSH_KEY }}
           port: ${{ secrets.STAGING_SSH_PORT }}
           script: |
-            cd CI-CD-Prac
+            cd BookMyShow-CI-CD
             git pull origin main
-            npm install
-            npm run build
-            npm run start
+            pnpm install
+            pnpm run build
+            pm2 restart all
