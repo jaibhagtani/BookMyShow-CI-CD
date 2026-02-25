@@ -6,17 +6,11 @@ import {client} from "@repo/db/client"
 
 // component can be async 
 export default async function Home() {
-  const user = await client.user.findMany();
+  const user = await client.user.findFirst();
   
   return (
     <div>
-      {
-        user.map((u: any) => (
-          <div>
-            {u?.username} - {u?.password}
-          </div>
-        ))
-      }
+        First Username : {user?.username} - Password : {user?.password}
     </div>
   );
 }

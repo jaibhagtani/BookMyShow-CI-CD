@@ -1,0 +1,47 @@
+name: Deploy to Staging
+on:
+  push:
+    branches:
+      - "production"
+
+# added ""secrets wali thing
+
+# ********** This is very very important thing ********** 
+# export NVM_DIR="$HOME/.nvm"
+#             source $NVM_DIR/nvm.sh
+#             nvm use 20
+# https://github.com/appleboy/ssh-action used to ssh into ec2.
+jobs:
+  redeploy_everything:
+    name: Deploying Everything to the staging cluster
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PRODUCTION_IP }}
+          username: ubuntu
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          port: ${{ secrets.PRODUCTION_SSH_PORT }}
+          script: |
+            cd BookMyShow-CI-CD
+
+            export NVM_DIR="$HOME/.nvm"
+            source $NVM_DIR/nvm.sh
+            nvm use 20
+            echo "Using Node version:"
+            node -v
+
+            git pull origin production
+            pnpm install
+            pnpm run build
+            PM2=/home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2
+            $PM2 delete http-server || true
+            cd apps/http-server && $PM2 start npm --name "http-server" -- run start && cd ../..
+            $PM2 delete ws-server || true
+            cd apps/ws-server && $PM2 start npm --name "ws-server" -- run start && cd ../..
+            $PM2 delete web-server || true
+            cd apps/web && $PM2 start npm --name "web-server" -- run start && cd ../..
+            $PM2 save
+
+
