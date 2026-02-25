@@ -25,11 +25,11 @@ jobs:
             pnpm run build
             PM2=/home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2
             $PM2 delete http-server || true
-            $PM2 start apps/http-server --name http-server
+            cd apps/http-server && $PM2 start npm --name "http-server" -- run start && cd ../..
             $PM2 delete ws-server || true
-            $PM2 start apps/ws-server --name ws-server
+            cd apps/ws-server && $PM2 start npm --name "ws-server" -- run start && cd ../..
             $PM2 delete web-server || true
-            $PM2 start apps/web --name web-server
+            cd apps/web && $PM2 start npm --name "web-server" -- run start && cd ../..
             $PM2 save
 
 
