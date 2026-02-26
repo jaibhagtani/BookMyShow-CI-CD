@@ -1,0 +1,4 @@
+node_modules
+.turbo
+.git
+apps/http-server/dist
