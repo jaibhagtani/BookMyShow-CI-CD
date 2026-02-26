@@ -5,16 +5,12 @@ WORKDIR /app
 
 COPY . .
 # isme .env bhi push ho jaati hai, toh make sure .dockerignore file mein .env aur **/.env add ho
-
 RUN npm install -g pnpm   
 RUN pnpm install
 # RUN pnpm run db-prisma-generate
 RUN pnpm build
 
-EXPOSE 3002
+EXPOSE 3001
 
-# CMD [ "npm", "run", "start:http" ]
-
-CMD [ "pnpm", "run", "db-prisma-generate", "&&", "npm", "run", "start:http" ]
-
-# docker build -t http-server-docker -f dockerfiles/http.Dockerfile .
+CMD [ "pnpm", "run", "db-prisma-generate", "&&", "npm", "run", "start:ws" ]
+# docker build -t ws-server-docker -f dockerfiles/ws.Dockerfile .

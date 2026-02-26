@@ -11,10 +11,9 @@ RUN pnpm install
 # RUN pnpm run db-prisma-generate
 RUN pnpm build
 
-EXPOSE 3002
+EXPOSE 3000
 
-# CMD [ "npm", "run", "start:http" ]
+# CMD [ "npm", "run", "start:web" ]
+CMD [ "pnpm", "run", "db-prisma-generate", "&&", "npm", "run", "start:web" ]
 
-CMD [ "pnpm", "run", "db-prisma-generate", "&&", "npm", "run", "start:http" ]
-
-# docker build -t http-server-docker -f dockerfiles/http.Dockerfile .
+# docker build -t web-docker -f dockerfiles/web.Dockerfile .
