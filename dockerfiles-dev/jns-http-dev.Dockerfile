@@ -3,8 +3,17 @@ FROM node:22-alpine
 # Working Directory /app
 WORKDIR /app
 
-# COPY package* .
-COPY . .
+
+COPY ./packages ./packages
+COPY ./pnpm-lock.yaml ./pnpm-lock.yaml
+COPY ./pnpm-workspace.yaml ./pnpm-workspace.yaml
+
+COPY ./package.json ./package.json
+
+COPY ./turbo.json ./turbo.json
+
+COPY ./apps/http-server ./apps/http-server
+
 # isme .env bhi push ho jaati hai, toh make sure .dockerignore file mein .env aur **/.env add ho
 
 RUN npm install -g pnpm
@@ -18,16 +27,19 @@ RUN pnpm install
 # ************************************************************8
 
 # COPY . .
-ENV DATABASE_URL=postgresql://postgres:mysecretpassword@localhost:5432/postgres
-RUN echo ${DATABASE_URL}
-RUN pnpm run db-prisma-migrate
-RUN pnpm run db-prisma-generate
-RUN pnpm build
+# Build ho rha hai host m/c pe, toh DB localhost pe milega
+# ENV DATABASE_URL=postgresql://postgres:mysecretpassword@localhost:5432/postgres
+# RUN pnpm run db-prisma-migrate
 
+# ENSURING Dockerfile not need to talk to DB while building
+# Not migrating the DB during the docker build, I will migrate when container starts 
+# Migrate outside when actually the container starts
+RUN npm run db:generate
+RUN pnpm build
 EXPOSE 3002
 
 # CMD [ "npm", "run", "start:http" ]
 
-CMD [ "pnpm", "run", "db-prisma-generate", "&&", "npm", "run", "start:http" ]
+CMD [ "npm", "run", "start:http" ]
 
 # docker build -t http-server-docker -f dockerfiles/http.Dockerfile .

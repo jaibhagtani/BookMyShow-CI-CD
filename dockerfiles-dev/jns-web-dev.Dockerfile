@@ -3,20 +3,28 @@ FROM node:22-alpine
 # Working Directory /app
 WORKDIR /app
 
-COPY package* .
-COPY packages* .
+
+COPY ./packages ./packages
+COPY ./pnpm-lock.yaml ./pnpm-lock.yaml
+COPY ./pnpm-workspace.yaml ./pnpm-workspace.yaml
+
+COPY ./package.json ./package.json
+
+COPY ./turbo.json ./turbo.json
+
+COPY ./apps/web ./apps/web
+
 # isme .env bhi push ho jaati hai, toh make sure .dockerignore file mein .env aur **/.env add ho
 
 RUN npm install -g pnpm   
 RUN pnpm install
-
-COPY . .
-# RUN pnpm run db-prisma-generate
+RUN npm run db:generate
 RUN pnpm build
 
 EXPOSE 3000
 
 # CMD [ "npm", "run", "start:web" ]
-CMD [ "pnpm", "run", "db-prisma-generate", "&&", "npm", "run", "start:web" ]
+# // migrate wala step tabhi run hoga jab http server start karenge
+CMD [ "npm", "run", "start:web" ]
 
 # docker build -t web-docker -f dockerfiles/web.Dockerfile .

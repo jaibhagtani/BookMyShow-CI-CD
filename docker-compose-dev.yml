@@ -1,0 +1,48 @@
+# docker-compose -f docker-compose-dev.yml up
+# How can one make a Docker Compose service build depend on another service?
+
+
+version: "3.9"
+services:
+  postgres-dev:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+  jns-http-dev:
+    build:
+      network: host
+      context: ./
+      dockerfile: dockerfiles-dev/jns-http-dev.Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres-dev:5432/postgres
+    depends_on:
+      - postgres-dev
+  jns-ws-dev:
+    build:
+      network: host
+      context: ./
+      dockerfile: dockerfiles-dev/jns-ws-dev.Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres-dev:5432/postgres
+    depends_on:
+      - postgres-dev
+  # jns-web-dev:
+  #   build:
+  #     network: host
+  #     context: ./
+  #     dockerfile: dockerfiles-dev/jns-web-dev.Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres-dev:5432/postgres
+  #   depends_on:
+  #     - postgres-dev
+      
