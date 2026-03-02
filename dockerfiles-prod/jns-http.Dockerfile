@@ -24,7 +24,7 @@ RUN npm install -g pnpm
 RUN pnpm install
 
 # COPY . .
-RUN pnpm run db-prisma-generate
+RUN pnpm run db:generate
 RUN DATABASE_URL=${DATABASE_URL} pnpm build
 
 EXPOSE 3002
