@@ -2,9 +2,8 @@
 FROM node:22-alpine
 # Working Directory /app
 WORKDIR /app
+ARG DATABASE_URL
 
-# COPY package* .
-# COPY packages* .
 COPY ./packages ./packages
 COPY ./pnpm-lock.yaml ./pnpm-lock.yaml
 COPY ./pnpm-workspace.yaml ./pnpm-workspace.yaml
@@ -19,9 +18,9 @@ COPY ./apps/ws-server ./apps/ws-server
 RUN npm install -g pnpm   
 RUN pnpm install
 RUN npm run db:generate
-RUN pnpm build
+RUN DATABASE_URL=${DATABASE_URL} pnpm build
 
 EXPOSE 3001
 
 CMD [ "npm", "run", "start:ws" ]
-# docker build -t ws-server-docker -f dockerfiles/ws.Dockerfile .
+# docker build -t ws-server-docker -f dockerfiles-dev/jns-ws-dev.Dockerfile .

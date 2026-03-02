@@ -4,7 +4,7 @@
 
 version: "3.9"
 services:
-  postgres-dev:
+  postgres_db:
     image: postgres
     environment:
       POSTGRES_USER: postgres
@@ -17,32 +17,37 @@ services:
       network: host
       context: ./
       dockerfile: dockerfiles-dev/jns-http-dev.Dockerfile
+      args:
+        - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres
     ports:
       - "3002:3002"
     environment:
-      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres-dev:5432/postgres
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres
     depends_on:
-      - postgres-dev
+      - postgres_db
   jns-ws-dev:
     build:
       network: host
       context: ./
       dockerfile: dockerfiles-dev/jns-ws-dev.Dockerfile
+      args:
+        - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres
     ports:
       - "3001:3001"
-    environment:
-      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres-dev:5432/postgres
     depends_on:
-      - postgres-dev
-  # jns-web-dev:
-  #   build:
-  #     network: host
-  #     context: ./
-  #     dockerfile: dockerfiles-dev/jns-web-dev.Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres-dev:5432/postgres
-  #   depends_on:
-  #     - postgres-dev
+      - postgres_db
+  jns-web-dev:
+    build:
+      network: host
+      context: ./
+      dockerfile: dockerfiles-dev/jns-web-dev.Dockerfile
+      args:
+        - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres
+    depends_on:
+      - postgres_db
       
+      # docker build -t jns-web-dev -f dockerfiles-dev/jns-web-dev.Dockerfile .

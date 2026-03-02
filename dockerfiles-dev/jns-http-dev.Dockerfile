@@ -3,6 +3,7 @@ FROM node:22-alpine
 # Working Directory /app
 WORKDIR /app
 
+ARG DATABASE_URL
 
 COPY ./packages ./packages
 COPY ./pnpm-lock.yaml ./pnpm-lock.yaml
@@ -35,11 +36,9 @@ RUN pnpm install
 # Not migrating the DB during the docker build, I will migrate when container starts 
 # Migrate outside when actually the container starts
 RUN npm run db:generate
-RUN pnpm build
+RUN DATABASE_URL=${DATABASE_URL} pnpm build
 EXPOSE 3002
-
-# CMD [ "npm", "run", "start:http" ]
 
 CMD [ "npm", "run", "start:http" ]
 
-# docker build -t http-server-docker -f dockerfiles/http.Dockerfile .
+# docker build -t http-server-docker -f dockerfiles-dev/jns-http-dev.Dockerfile .
