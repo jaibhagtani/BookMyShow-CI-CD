@@ -1,3 +1,7 @@
+# Build the docker image
+# Push the docker image to the docker hub
+# SSH into the Production server and start the new image
+
 name: Deploy to Production
 on:
   push:
@@ -12,37 +16,79 @@ on:
 #             nvm use 20
 # https://github.com/appleboy/ssh-action used to ssh into ec2.
 jobs:
-  redeploy_everything:
-    name: Deploying Everything to the staging cluster
-    runs-on: ubuntu-latest
-    steps:
-      - name: SSH into server
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.PRODUCTION_IP }}
-          username: ubuntu
-          key: ${{ secrets.PRODUCTION_SSH_KEY }}
-          port: ${{ secrets.PRODUCTION_SSH_PORT }}
-          script: |
-            cd BookMyShow-CI-CD
+  builds:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout the code (clone codebase to ubuntu m/c)
+      uses: actions/checkout@v3
+    
+    - name: Docker Login
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    
+    - name: Build and Push Docker Image for (WEB)
+      uses: docker/build-push-action@v4
+      with:
+        contexts: .
+        file: ./dockerfiles-prod/jns-web.Dockerfile
+        push: true
+        build-args: |
+          DATABASE_URL=${{ secrets.PROD_DATABASE_URL }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/jns-web:${{ github.sha }}
 
-            export NVM_DIR="$HOME/.nvm"
-            source $NVM_DIR/nvm.sh
-            nvm use 20
-            echo "Using Node version:"
-            node -v
+    - name: Build and Push Docker Image for (HTTP-SERVER)
+      uses: docker/build-push-action@v4
+      with:
+        contexts: .
+        file: ./dockerfiles-prod/jns-http.Dockerfile
+        push: true
+        build-args: |
+          DATABASE_URL=${{ secrets.PROD_DATABASE_URL }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/jns-http:${{ github.sha }}
 
-            git fetch origin
-            git reset --hard origin/production
-            pnpm install
-            pnpm run build
-            PM2=/home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2
-            $PM2 delete http-server || true
-            cd apps/http-server && $PM2 start npm --name "http-server" -- run start && cd ../..
-            $PM2 delete ws-server || true
-            cd apps/ws-server && $PM2 start npm --name "ws-server" -- run start && cd ../..
-            $PM2 delete web-server || true
-            cd apps/web && $PM2 start npm --name "web-server" -- run start && cd ../..
-            $PM2 save
+    - name: Build and Push Docker Image for (WS-SERVER)
+      uses: docker/build-push-action@v4
+      with:
+        contexts: .
+        file: ./dockerfiles-prod/jns-ws.Dockerfile
+        push: true
+        build-args: |
+          DATABASE_URL=${{ secrets.PROD_DATABASE_URL }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/jns-ws:${{ github.sha }}
+
+  # redeploy_everything:
+  #   name: Deploying Everything to the staging cluster
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: SSH into server
+  #       uses: appleboy/ssh-action@v1
+  #       with:
+  #         host: ${{ secrets.PRODUCTION_IP }}
+  #         username: ubuntu
+  #         key: ${{ secrets.PRODUCTION_SSH_KEY }}
+  #         port: ${{ secrets.PRODUCTION_SSH_PORT }}
+  #         script: |
+  #           cd BookMyShow-CI-CD
+
+  #           export NVM_DIR="$HOME/.nvm"
+  #           source $NVM_DIR/nvm.sh
+  #           nvm use 20
+  #           echo "Using Node version:"
+  #           node -v
+
+  #           git fetch origin
+  #           git reset --hard origin/production
+  #           pnpm install
+  #           pnpm run build
+  #           PM2=/home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2
+  #           $PM2 delete http-server || true
+  #           cd apps/http-server && $PM2 start npm --name "http-server" -- run start && cd ../..
+  #           $PM2 delete ws-server || true
+  #           cd apps/ws-server && $PM2 start npm --name "ws-server" -- run start && cd ../..
+  #           $PM2 delete web-server || true
+  #           cd apps/web && $PM2 start npm --name "web-server" -- run start && cd ../..
+  #           $PM2 save
 
 

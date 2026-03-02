@@ -12,6 +12,7 @@ services:
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+    # command: ["npm", "run", "docker:prisma-migrate"]
   jns-http-dev:
     build:
       network: host
@@ -24,7 +25,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres
     depends_on:
-      - postgres_db
+      postgres_db:
+        condition: service_healthy
   jns-ws-dev:
     build:
       network: host
@@ -35,7 +37,8 @@ services:
     ports:
       - "3001:3001"
     depends_on:
-      - postgres_db
+      postgres_db:
+        condition: service_healthy
   jns-web-dev:
     build:
       network: host
@@ -48,6 +51,16 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres
     depends_on:
-      - postgres_db
-      
-      # docker build -t jns-web-dev -f dockerfiles-dev/jns-web-dev.Dockerfile .
+      postgres_db:
+        condition: service_healthy
+  prisma_migrate:
+    build:
+      network: host
+      context: ./
+      dockerfile: dockerfiles-dev/jns-http-dev.Dockerfile
+    command: ["npx", "prisma", "docker:prisma-migrate"]
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres
+    depends_on:
+      postgres_db:
+        condition: service_healthy

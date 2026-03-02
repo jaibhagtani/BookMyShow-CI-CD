@@ -32,22 +32,22 @@ Thank you for your interest in contributing! Please follow these guidelines.
 
 2. Create a nwtwork:
     `docker network create jns-network`
-    
+
 3. Start PostgreSQL (using docker):
     ```bash
     docker run --name postgres_db --network jns-network -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
     ```
 4. Build the image (http-server): `docker build --network=host -t jns-http-server-dev --build-arg DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/postgres" -f dockerfiles-dev/jns-http-dev.Dockerfile .`
 
-5. Run the image (http-server): `docker run --network jns-network -e DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres -p 3002:3002 jns-http-server-dev`
+5. Run the image (http-server): `docker run --network jns-network -d -e DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres -p 3002:3002 jns-http-server-dev`
 
 6. Build the image (ws-server): `docker build --network=host -t jns-ws-server-dev --build-arg DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/postgres" -f dockerfiles-dev/jns-ws-dev.Dockerfile .`
 
-7. Run the image (ws-server): `docker run --network jns-network -e DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres -p 3001:3001 jns-ws-server-dev`
+7. Run the image (ws-server): `docker run --network jns-network -d -e DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres -p 3001:3001 jns-ws-server-dev`
 
 8. Build the image (web): `docker build --network=host -t jns-web-dev --build-arg DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/postgres" -f dockerfiles-dev/jns-web-dev.Dockerfile .`
 
-9. Run the image (web): `docker run --network jns-network -e DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres -p 3000:3000 jns-web-dev`
+9. Run the image (web): `docker run --network jns-network -d -e DATABASE_URL=postgresql://postgres:mysecretpassword@postgres_db:5432/postgres -p 3000:3000 jns-web-dev`
 
 ## Docker Compose Installation
 
