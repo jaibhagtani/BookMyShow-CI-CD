@@ -18,7 +18,7 @@ COPY ./apps/web ./apps/web
 
 # isme .env bhi push ho jaati hai, toh make sure .dockerignore file mein .env aur **/.env add ho
 
-RUN npm install -g pnpm   
+RUN npm install -g pnpm
 RUN pnpm install
 RUN npm run db:generate
 # RUN echo DATABASE_URL=$DATABASE_URL
