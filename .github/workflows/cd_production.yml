@@ -66,6 +66,7 @@ jobs:
           key: ${{ secrets.PRODUCTION_SSH_KEY }}
           port: ${{ secrets.PRODUCTION_SSH_PORT }}
           script: |
+            docker image prune -a -f
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/jns-web:${{ github.sha }}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/jns-http:${{ github.sha }}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/jns-ws:${{ github.sha }}
