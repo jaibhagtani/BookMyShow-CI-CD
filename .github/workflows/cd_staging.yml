@@ -1,6 +1,6 @@
 # Build the docker image
 # Push the docker image to the docker hub
-# SSH into the Staging server and start the new image
+# SSH into the Staging server and start the new image,
 
 name: Deploy to Staging
 on:
