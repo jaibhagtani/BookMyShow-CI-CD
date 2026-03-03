@@ -58,11 +58,7 @@ jobs:
             DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/jns-ws:${{ github.sha }}
 
-  redeploy_everything:
-    name: Deploying Everything to the staging cluster
-    runs-on: ubuntu-latest
-    steps:
-      - name: SSH into server
+      - name: SSH into server (Deploying Everything to the staging cluster)
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.STAGING_IP }}
@@ -82,7 +78,7 @@ jobs:
             docker run -d --name jns-http -p 3002:3002 -e DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }} ${{ secrets.DOCKERHUB_USERNAME }}/jns-http:${{ github.sha }}
             docker run -d --name jns-ws -p 3001:3001 -e DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }} ${{ secrets.DOCKERHUB_USERNAME }}/jns-ws:${{ github.sha }}
             docker run -d --name jns-web -p 3000:3000 -e DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }} ${{ secrets.DOCKERHUB_USERNAME }}/jns-web:${{ github.sha }}
-            
+
 
 # cd BookMyShow-CI-CD
 
