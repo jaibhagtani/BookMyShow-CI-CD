@@ -58,37 +58,50 @@ jobs:
             DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/jns-ws:${{ github.sha }}
 
-  # redeploy_everything:
-  #   name: Deploying Everything to the staging cluster
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: SSH into server
-  #       uses: appleboy/ssh-action@v1
-  #       with:
-  #         host: ${{ secrets.STAGING_IP }}
-  #         username: ubuntu
-  #         key: ${{ secrets.STAGING_SSH_KEY }}
-  #         port: ${{ secrets.STAGING_SSH_PORT }}
-  #         script: |
-  #           cd BookMyShow-CI-CD
+  redeploy_everything:
+    name: Deploying Everything to the staging cluster
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.STAGING_IP }}
+          username: ubuntu
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_SSH_PORT }}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/jns-web:${{ github.sha }}
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/jns-http:${{ github.sha }}
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/jns-ws:${{ github.sha }}
+            docker stop jns-web || true
+            docker rm jns-web || true
+            docker stop jns-http || true
+            docker rm jns-http || true
+            docker stop jns-ws || true
+            docker rm jns-ws || true
+            docker run -d --name jns-http -p 3002:3002 -e DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }} ${{ secrets.DOCKERHUB_USERNAME }}/jns-http:${{ github.sha }}
+            docker run -d --name jns-ws -p 3001:3001 -e DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }} ${{ secrets.DOCKERHUB_USERNAME }}/jns-ws:${{ github.sha }}
+            docker run -d --name jns-web -p 3000:3000 -e DATABASE_URL=${{ secrets.STAGING_DATABASE_URL }} ${{ secrets.DOCKERHUB_USERNAME }}/jns-web:${{ github.sha }}
+            
 
-  #           export NVM_DIR="$HOME/.nvm"
-  #           source $NVM_DIR/nvm.sh
-  #           nvm use 20
-  #           echo "Using Node version:"
-  #           node -v
+# cd BookMyShow-CI-CD
 
-  #           git fetch origin
-  #           git reset --hard origin/main
-  #           pnpm install
-  #           pnpm run build
-  #           PM2=/home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2
-  #           $PM2 delete http-server || true
-  #           cd apps/http-server && $PM2 start npm --name "http-server" -- run start && cd ../..
-  #           $PM2 delete ws-server || true
-  #           cd apps/ws-server && $PM2 start npm --name "ws-server" -- run start && cd ../..
-  #           $PM2 delete web-server || true
-  #           cd apps/web && $PM2 start npm --name "web-server" -- run start && cd ../..
-  #           $PM2 save
+#             export NVM_DIR="$HOME/.nvm"
+#             source $NVM_DIR/nvm.sh
+#             nvm use 20
+#             echo "Using Node version:"
+#             node -v
 
+#             git fetch origin
+#             git reset --hard origin/main
+#             pnpm install
+#             pnpm run build
+#             PM2=/home/ubuntu/.nvm/versions/node/v20.20.0/bin/pm2
+#             $PM2 delete http-server || true
+#             cd apps/http-server && $PM2 start npm --name "http-server" -- run start && cd ../..
+#             $PM2 delete ws-server || true
+#             cd apps/ws-server && $PM2 start npm --name "ws-server" -- run start && cd ../..
+#             $PM2 delete web-server || true
+#             cd apps/web && $PM2 start npm --name "web-server" -- run start && cd ../..
+#             $PM2 save
 
