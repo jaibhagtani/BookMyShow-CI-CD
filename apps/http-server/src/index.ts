@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => res.send("hello ji, mein hu owner, thik hai naya IP hai"));
+app.get("/", (req, res) => res.send("hello ji, mein hu owner, thik hai naya IP hai, ye docker se chal raha hai, toh thoda alag hoga"));
 
 app.post("/signup", async (req, res) => {
   try {
